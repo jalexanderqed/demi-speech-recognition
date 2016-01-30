@@ -9,7 +9,7 @@ import java.io.InputStream;
 
 import edu.cmu.sphinx.api.Configuration;
 import edu.cmu.sphinx.api.SpeechResult;
-import edu.cmu.sphinx.api.StreamSpeechRecognizer;
+import edu.cmu.sphinx.api.LiveSpeechRecognizer;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,13 +23,20 @@ public class Main {
         configuration
                 .setLanguageModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us.lm.bin");
 
-        try {
-            StreamSpeechRecognizer recognizer = new StreamSpeechRecognizer(configuration);
-            InputStream stream = new FileInputStream(new File("test.wav"));
+        System.out.println("We are now actually doing something");
 
-            recognizer.startRecognition(stream);
+        try {
+            LiveSpeechRecognizer recognizer = new LiveSpeechRecognizer(configuration);
+// Start recognition process pruning previously cached data.
+            recognizer.startRecognition(true);
+
+            System.out.println("Inside try");
             SpeechResult result;
+
+            System.out.println("Finished startRecognition()");
+
             while ((result = recognizer.getResult()) != null) {
+                System.out.println("Inside loop");
                 System.out.format("Hypothesis: %s\n", result.getHypothesis());
             }
             recognizer.stopRecognition();
